@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/hvilander/restaurant-spinner/handler"
 	"github.com/joho/godotenv"
 )
 
@@ -28,6 +29,7 @@ func main() {
 	mux.Handle("/app/", appHandler)
 
 	// register paths
+	mux.Handle("/app/home", handler.MakeHandler(handler.HandlerHomeIndex))
 
 	// start server
 	slog.Info(fmt.Sprintf("server starting on http://localhost:%s", PORT))
