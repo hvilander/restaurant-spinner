@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	home "github.com/hvilander/restaurant-spinner/view/home"
+	home "github.com/hvilander/restaurant-spinner/templates/home"
 )
 
 func HandlerHomeIndex(w http.ResponseWriter, r *http.Request) error {

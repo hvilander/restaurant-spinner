@@ -1,0 +1,31 @@
+package layout 
+
+templ Nav() {
+		<div class="nav-bar">
+			<h1>Restaurant Spinner<span class="subtitle">get unstuck</span></h1>
+		</div>
+}
+
+/// ENTRY POINT TO WEB APP
+templ App(hasNav bool, clientID string) {
+	<!doctype html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="styles.css" />
+    <script src="https://unpkg.com/htmx.org@2.0.0/dist/htmx.min.js" defer></script>
+	</head>
+	<body>
+		if hasNav {
+			@Nav()
+		}
+		{ children... }
+		<h1>IS THIS ON?</h1>
+	</body>
+	
+	</html>
+
+
+
+}
