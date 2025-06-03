@@ -16,14 +16,11 @@ import (
 )
 
 func main() {
-
-	// setup config
+	// load env vars
 	godotenv.Load()
 	PORT := os.Getenv("PORT")
-	sessSec := os.Getenv("SESSION_SECRET")
-	fmt.Println("Starting Up...")
-	fmt.Println("sess sec", sessSec)
 
+	// init goth / gothic auth
 	auth.NewAuth()
 
 	m := map[string]string{
@@ -35,20 +32,9 @@ func main() {
 	}
 	providerIndex := &ProviderIndex{Providers: keys, ProvidersMap: m}
 
+	// todo I still wanna try using a stdlib router
 	p := pat.New()
 	p.Get("/auth/{provider}/callback", func(res http.ResponseWriter, req *http.Request) {
-		q := req.URL.Query()
-		fmt.Println("in callback")
-
-		fmt.Println("query", q[":provider"])
-		fmt.Println(gothic.SessionName)
-		sesh, seshErr := gothic.Store.Get(req, gothic.SessionName)
-		if seshErr != nil {
-			fmt.Println("sesh error:", seshErr)
-			fmt.Println("sesh error:", seshErr)
-		}
-
-		fmt.Println("len", len(sesh.Values))
 		user, err := gothic.CompleteUserAuth(res, req)
 		if err != nil {
 			fmt.Fprintln(res, err)
@@ -68,11 +54,9 @@ func main() {
 	p.Get("/auth/{provider}", func(res http.ResponseWriter, req *http.Request) {
 		// try to get the user without re-authenticating
 		if gothUser, err := gothic.CompleteUserAuth(res, req); err == nil {
-			fmt.Println("calling complete user auth")
 			t, _ := template.New("foo").Parse(userTemplate)
 			t.Execute(res, gothUser)
 		} else {
-			fmt.Println("calling begin")
 			gothic.BeginAuthHandler(res, req)
 		}
 	})
@@ -82,7 +66,7 @@ func main() {
 		t.Execute(res, providerIndex)
 	})
 
-	log.Println("listening on localhost:8080")
+	slog.Info("Listening on", "port", PORT)
 	log.Fatal(http.ListenAndServe(":8080", p))
 
 	mux := http.NewServeMux()

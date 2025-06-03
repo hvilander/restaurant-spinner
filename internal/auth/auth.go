@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -9,7 +8,6 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/markbates/goth"
 
-	//	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/google"
 )
@@ -28,18 +26,15 @@ func NewAuth() {
 	googleClientId := os.Getenv("GOOGLE_KEY")
 	googleClientSecret := os.Getenv("GOOGLE_SECRET")
 	key := []byte(os.Getenv("SESSION_SECRET"))
-	fmt.Println(key)
 	cookieStore := sessions.NewCookieStore(key)
 	cookieStore.Options.HttpOnly = true
 	gothic.Store = cookieStore
 
 	// todo reconsider these options
-	//store.MaxAge(MaxAge)
 	//store.Options.Path = "/"
-	//store.Options.HttpOnly = true
-	//store.Options.Secure = IsProd
+	//cookieStore.MaxAge(MaxAge)
+	// store.Options.Secure = IsProd // I think this breaks my current setup
 
-	//	gothic.Store = store
 	goth.UseProviders(
 		google.New(googleClientId, googleClientSecret, "http://localhost:8080/auth/google/callback"),
 	)
