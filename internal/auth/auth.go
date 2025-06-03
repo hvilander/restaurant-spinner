@@ -1,12 +1,15 @@
 package auth
 
 import (
+	"fmt"
 	"log"
 	"os"
 
 	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
 	"github.com/markbates/goth"
+
+	//	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/google"
 )
@@ -24,16 +27,21 @@ func NewAuth() {
 
 	googleClientId := os.Getenv("GOOGLE_KEY")
 	googleClientSecret := os.Getenv("GOOGLE_SECRET")
-	store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
-	store.MaxAge(MaxAge)
+	key := []byte(os.Getenv("SESSION_SECRET"))
+	fmt.Println(key)
+	cookieStore := sessions.NewCookieStore(key)
+	cookieStore.Options.HttpOnly = true
+	gothic.Store = cookieStore
 
-	store.Options.Path = "/"
-	store.Options.HttpOnly = true
-	store.Options.Secure = IsProd
+	// todo reconsider these options
+	//store.MaxAge(MaxAge)
+	//store.Options.Path = "/"
+	//store.Options.HttpOnly = true
+	//store.Options.Secure = IsProd
 
-	gothic.Store = store
+	//	gothic.Store = store
 	goth.UseProviders(
-		google.New(googleClientId, googleClientSecret, "http://localhost:8080/auth/callback?provider=google"),
+		google.New(googleClientId, googleClientSecret, "http://localhost:8080/auth/google/callback"),
 	)
 
 }
