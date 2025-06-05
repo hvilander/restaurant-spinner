@@ -14,7 +14,6 @@ import (
 
 const (
 	MaxAge = 86400 * 30 // 30 days
-	IsProd = false
 )
 
 func NewAuth() {
@@ -28,12 +27,9 @@ func NewAuth() {
 	key := []byte(os.Getenv("SESSION_SECRET"))
 	cookieStore := sessions.NewCookieStore(key)
 	cookieStore.Options.HttpOnly = true
+	cookieStore.MaxAge(MaxAge)
+	cookieStore.Options.Secure = true // a false here will cause this setup to stop working
 	gothic.Store = cookieStore
-
-	// todo reconsider these options
-	//store.Options.Path = "/"
-	//cookieStore.MaxAge(MaxAge)
-	// store.Options.Secure = IsProd // I think this breaks my current setup
 
 	goth.UseProviders(
 		google.New(googleClientId, googleClientSecret, "http://localhost:8080/auth/google/callback"),
