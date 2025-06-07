@@ -4,7 +4,8 @@ go 1.24.3
 
 require (
 	github.com/a-h/templ v0.3.865
-	github.com/gorilla/pat v0.0.0-20180118222023-199c85a7f6d1
+	github.com/golang-jwt/jwt/v5 v5.2.2
+	github.com/google/uuid v1.6.0
 	github.com/gorilla/sessions v1.4.0
 	github.com/joho/godotenv v1.5.1
 	github.com/markbates/goth v1.81.0
